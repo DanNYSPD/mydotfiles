@@ -75,6 +75,36 @@ function switchf(){
   echo "switch done"
 
 }
+function targz(){
+    if [[ "$#" -eq 0 ]];then 
+        echo "at least one parameter is necessary"
+        return 1
+    fi 
+
+    if [[ "$#" -eq 1 ]]; then 
+        tar -zvcf "$1.tar.gz" "$1"
+    else  
+        #in this case the escenario is more complex
+        result=$(find "$PWD" -name "$1")
+        if [[ -n $result ]]; then 
+            #echo YES
+            #the name will be the name of the current directory
+            local baseName=${PWD##*/} 
+            #echo "$baseName"
+            tar -zvcf "$baseName.tar.gz" "$@"
+        else 
+            #echo NO
+            tar -zvcf "$1.tar.gz" "$@"
+        fi
+       
+    fi 
+}
+function untargz(){
+    tar -xvzf "$1"
+}
+function hs(){
+    history | grep "$@"
+}
 
 function rsync-update(){
     if [[ ! -f "$1" ]];then
