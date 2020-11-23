@@ -44,8 +44,46 @@ function backup(){
     fi
     
 }
+function switchf(){
+  #this command swith files , the first file is rename it to the second file name and viceversa, an intermediate file is created and 
+  #the transaction is registered on  /tmp/switchf.log file.
 
+  local file1=$1
+  local file2=$2
+  #the both filenames extensions are removed (in case the have) to create the temporal filename
+  local int_file="${file1}_${file2}"
+  #https://askubuntu.com/questions/881361/confirm-that-a-user-has-read-and-write-access-to-current-directory 
+  #test -r 
+  if [[ ! -w "$file1" ]];then 
+      echo "you don't have write permission, unable to rename file 1: $file1 to file $file2"
+      #exit 1  #I don't use this because it kills the terminal
+      return 1
+  fi
+   if [[ ! -w "$file2" ]];then 
+      echo "you don't have write permission, unable to rename file 2: $file2 to file: $file1"
+      return 1
+  fi
+ echo "moving 1 to inter $int_file"
+  mv $file1 $int_file
+  if [[ "$?" -ne 0 ]]; then 
+    echo "An error ocurred while moving $file1 to $int_file, trying to keep file"
 
+    return 2
+  fi
+  mv "$file2" "$file1"
+  mv "$int_file" "$file2"
+  echo "switch done"
+
+}
+
+function rsync-update(){
+    if [[ ! -f "$1" ]];then
+        echo "File $1 doesnt' exists"
+        exit 1
+    fi
+     rsync -avz --update --existing "$1" "$removeServer":"$rootPath/$1" 
+
+}
 
 #get it from https://github.com/mathiasbynens/dotfiles/blob/main/.functions
 
