@@ -171,3 +171,38 @@ function fs() {
     fi;
     
 }
+
+function gitls(){
+#list all the branches with the date info
+#REFERENCES:
+#https://stackoverflow.com/questions/2514172/listing-each-branch-and-its-last-revisions-date-in-git
+#https://www.commandlinefu.com/commands/view/2345/show-git-branches-by-date-useful-for-showing-active-branches
+    for name in `git branch -a | perl -pe s/^..//`; do echo -e `git show --pretty=format:"%Cgreen%ci %Cblue%cr%Creset" $k -- | head -n 1`\\t$name; done | sort -r
+}
+function selectTopFeactNumberBranch(){
+#based on references:
+
+#logic is to select the feat branches that include a number "feat/01_XXX" "feat/{number}_", then remove the text in order to get the highest number
+#given the branch "feat/{number}_" this function will return the next number
+
+
+    git status > /dev/null
+    if [[ $? -ne 0 ]]; then 
+        echo "no repository"
+        return 1
+    fi
+    branch_description=$1
+	#nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*origin\/feat\///' -e 's/_.*//'  | sort -r | head -n1 |tr -d '[[:blank:]]')
+	nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*feat\///' -e 's/_.*//'  | sort -r | head -n1 |tr -d '[[:blank:]]')
+    
+    #echo "$nextBranch" #for debug
+    if [[ "$nextBranch" =~ '[0-9]{1,4}' ]]; then 
+        nextBranch=$((nextBranch+1))
+        newBranchName="feat/${nextBranch}_${branch_description}"
+        echo "$newBranchName"
+        #by uploading the new branch automatically we ensure that this branch number will no be used by another app
+        echo "git checkout -b $newBranchName && git push origin"
+        return 0
+    fi 
+	echo 'No given branch names with the format: <feat/{number}_{featch_description}> were found! in the current repo.\nPlease make sure this repo follows that convention or if you need to create the firts branch with this convention, so the firts branch name is: \n<feat/1_{branch_description}>'
+}
