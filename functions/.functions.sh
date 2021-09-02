@@ -1,7 +1,9 @@
+#!/bin/bash
+
 mkcdir ()
 {
     mkdir -p -- "$@" &&
-    cd -P -- "$_"
+    cd -P -- "$_" || return 1
     
 }
 function urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}";  }
@@ -119,7 +121,7 @@ function rsync-update(){
 
 # Normalize `open` across Linux, macOS, and Windows.
 # This is needed to make the `o` function (see below) cross-platform.
-if [ ! $(uname -s) = 'Darwin'  ]; then
+if [ ! "$(uname -s)" = 'Darwin'  ]; then
     if grep -q Microsoft /proc/version; then
         # Ubuntu on Windows using the Linux subsystem
         alias open='explorer.exe';
@@ -187,7 +189,7 @@ function selectTopFeactNumberBranch(){
 
 
     git status > /dev/null
-    if [[ $? -ne 0 ]]; then 
+    if [[ "$?" -ne 0 ]]; then 
         echo "no repository"
         return 1
     fi
@@ -196,7 +198,7 @@ function selectTopFeactNumberBranch(){
 	nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*feat\///' -e 's/_.*//'  | sort -r | head -n1 |tr -d '[[:blank:]]')
     
     #echo "$nextBranch" #for debug
-    if [[ "$nextBranch" =~ '[0-9]{1,4}' ]]; then 
+    if [[ "$nextBranch" =~ [0-9]{1,4} ]]; then 
         nextBranch=$((nextBranch+1))
         newBranchName="feat/${nextBranch}_${branch_description}"
         echo "$newBranchName"
@@ -205,4 +207,35 @@ function selectTopFeactNumberBranch(){
         return 0
     fi 
 	echo 'No given branch names with the format: <feat/{number}_{featch_description}> were found! in the current repo.\nPlease make sure this repo follows that convention or if you need to create the firts branch with this convention, so the firts branch name is: \n<feat/1_{branch_description}>'
+}
+
+# Description: this function will list files in a tree format excluding by default git ignored files if a .gitignore is found, otherwise it will ignore common folders
+# Globals: NONE
+# Args:  
+function tre(){
+
+    local EXCLUDED_TREE
+    #based on https://github.com/mathiasbynens/dotfiles/blob/main/.functions
+    if [[ -f ".gitignore" ]]; then 
+        EXCLUDED_TREE=$(cat .gitignore | grep -Ev '^$|^#' | awk -vORS='|' '{print $1} END {print ".git"}' | sed -e's/|$/\n/' -e 's/\/|/|/g')
+    else 
+        EXCLUDED_TREE=".git|.env|.vscode|vendor|node_modules|bower_components"
+    fi
+    #joins the expresion, tree doesn't seem to support "/" for dirs so we remove it, finally I add ".git" to the list in order to be avoided
+    # I ignore  those files that match the wild-card pattern
+    tree -aC -I "$EXCLUDED_TREE" --dirsfirst "$@" | less -FRNX;
+
+}
+# Description: this function will go enter to the file dir of the given file to avoid "cd: not a directory" when a not dir is given
+#
+# Args: 1 .- File used to go to the dir
+function cdf () {
+    local DIR
+    if [[ -f "$1" && ! -d "" ]]; then 
+        DIR=$(dirname "$1")    
+        cd "$DIR" || return 1 
+
+    else 
+        cd "$@" || return 1
+    fi    
 }
