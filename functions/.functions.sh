@@ -226,7 +226,7 @@ function tre(){
     tree -aC -I "$EXCLUDED_TREE" --dirsfirst "$@" | less -FRNX;
 
 }
-# Description: this function will go enter to the file dir of the given file to avoid "cd: not a directory" when a not dir is given
+# This function will go enter to the file dir of the given file to avoid "cd: not a directory" when a not dir is given
 #
 # Args: 1 .- File used to go to the dir
 function cdf () {
@@ -238,4 +238,56 @@ function cdf () {
     else 
         cd "$@" || return 1
     fi    
+}
+
+# This function will search a string until if found it, it has a "sleep 1" , 
+# every time it doesn't find the docker container it will print is not found
+#
+# Args: 1 .- container name
+function waitUntilDockerProcessIsRunning(){
+	
+	local PROCESS="$1"
+	until docker ps | grep -m 1 "$PROCESS"; do : ; sleep 1;  echo "still not found:$PROCESS" ; done
+
+}
+function git-commit(){
+	prefixCommitName=$(git branch| grep '*' | tr -d ' *')
+	echo "git commit  -m  ' (${prefixCommitName}): $@ '" 
+	type="" # feat/fix
+	PS3='Please select the type of commit: '
+	optselect=("feat" 
+    "fix" 
+    "Quit")
+	select opt in "${optselect[@]}"
+	do
+	    case $opt in
+	        "feat")
+	           type="feat"
+               break
+	            ;;
+	        "fix")
+	            type="fix"
+                break
+	            ;;       
+	        "Quit")
+	            break
+	            ;;
+	        *) echo "invalid option $REPLY";;
+	    esac
+	done
+
+	local gitcommand
+	gitcommand="git commit  -m  '$type(${prefixCommitName}): $@ '" 
+	echo "$gitcommand" 
+    
+	#read -p "Are you sure to run $gitcommand? " -n 1 -r #bash way -p option has a different meaning in zsh
+    read  "REPLY?Are you sure?" 
+
+	#echo    # (optional) move to a new line
+	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        eval ${gitcommand} #zsh
+    else 
+	    echo "wasn't run $gitcommand"
+	fi
+
 }
