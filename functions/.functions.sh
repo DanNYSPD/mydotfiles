@@ -288,6 +288,9 @@ function git-commit(){
         eval ${gitcommand} #zsh
     else 
 	    echo "wasn't run $gitcommand"
+        return 1
 	fi
-
+    
+    bname=$(git branch --show-current)
+    echo "git push origin $bname"
 }
