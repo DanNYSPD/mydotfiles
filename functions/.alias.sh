@@ -33,13 +33,15 @@ alias django-show-urls='make show_urls| grep -Ev "django.*|rest_framework" | get
 alias gspy=git status --porcelain | grep -E '*.py'  
 alias gsphp=git status --porcelain | grep -E '*.php'  
 alias gsjava=git status --porcelain | grep -E '*.java'  
+alias gsmd=git status --porcelain | grep -E '*.md'  
 
+alias mls='cat Makefile | grep -Eo "(.*):$" | tr -d ":"'
 alias psg='ps aux | grep'
 
 alias hhg='history | grep'
-
 alias finame='find . -iname'
 
-alias k9=kill -9
+alias k9='kill -9'
+#return 0
 
-alias gppush=git push origin $(git branch| grep '*' | tr -d '* ')
+alias gppush='git push origin $(git branch| grep "*" | tr -d "* ")'
