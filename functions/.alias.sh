@@ -41,7 +41,10 @@ alias psg='ps aux | grep'
 alias hhg='history | grep'
 alias finame='find . -iname'
 
-alias k9='kill -9'
+alias k9='kill -9' #quick kill process
 #return 0
 
-alias gppush='git push origin $(git branch| grep "*" | tr -d "* ")'
+alias gppush='git push origin $(git branch| grep "*" | tr -d "* ")' #push current branch
+
+alias m='make'
+alias h='history'
