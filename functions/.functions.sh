@@ -294,3 +294,28 @@ function git-commit(){
     bname=$(git branch --show-current)
     echo "git push origin $bname"
 }
+
+
+#0 – major, 1 – minor, 2 – patch
+increment_version() {
+    if [[ $2 -eq 0 ]]; then 
+        echo "$1" | awk -F. -v OFS=. '{print $1+1, $2 ,$3}'
+    elif [[ $2 -eq 1 ]]; then 
+        echo "$1" | awk -F. -v OFS=. '{print $1, $2+1 ,$3}'
+    elif [[ $2 -eq 2 ]]; then 
+        echo "$1" | awk -F. -v OFS=. '{print $1, $2 ,$3+1}'
+    fi
+    
+}
+
+function tagIncrement(){
+    lastTag=$(git tag | sort -r | head -n1)
+    echo "last commit: $lastTag"
+    echo -n "minor: "
+    increment_version $lastTag 1
+    echo -n "patch: "
+    increment_version $lastTag 2 
+     
+    echo "git tag -a $(increment_version $lastTag 1) -m 'messageHere' or git tag -a $(increment_version $lastTag 2) -m 'messageHere' " 
+    echo "git push --tags"
+}
