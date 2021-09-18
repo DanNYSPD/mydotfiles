@@ -51,6 +51,6 @@ alias h='history'
 
 alias ta="tmux attach"
 
-alias postman-safe='DISABLE_WAYLAND=1 postman' #a bug in postman
+alias postman-safe='DISABLE_WAYLAND=1 postman' #a bug in postman from snap
 #$'...' (ANSI-C-like strings)	since bash 2.0. Ref:https://wiki.bash-hackers.org/scripting/bashchanges
 alias k9slack=$'psg slac | grep "usr" | grep \'slack$\' | awk \'{print $2}\' | xargs kill -9' #https://stackoverflow.com/questions/1250079/how-to-escape-single-quotes-within-single-quoted-strings
