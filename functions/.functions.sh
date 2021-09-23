@@ -319,3 +319,25 @@ function tagIncrement(){
     echo "git tag -a $(increment_version $lastTag 1) -m 'messageHere' or git tag -a $(increment_version $lastTag 2) -m 'messageHere' " 
     echo "git push --tags"
 }
+# if we have a list of files and I just want to list those with a numbger bigger than the specified 
+# 01_XXX
+# 03_XX
+# 0004_xxxx
+# 05_xxx
+# 06_xxx
+# >ls_files_that_start_with_number_since_value 04 
+# output:
+# 05_xxx
+# 05_xxx
+function ls_files_that_start_with_number_gt_than(){
+    local OFFSET
+    OFFSET="$1"
+    local EXTENSION="${2:-py}"
+    #>&2 echo $EXTENSION
+    for file in *."$EXTENSION";
+    do
+        number=$(echo "$file" | cut -f1 -d'_'); #give files with the structure "0015_auto_xxxx.py" the separator is '_' , I focus only  in the firts part which is the number XXXX 
+        #echo $number #for debug
+        [[ $number -gt $OFFSET ]] && echo "$file"
+    done
+}
