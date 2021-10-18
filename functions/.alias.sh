@@ -71,3 +71,9 @@ alias h='history|grep '
 
 alias ffind="find . -type f"
 alias dfind="find . -type d"
+alias lla='ls -la'
+
+# init python
+alias pyinit='python3 -m venv env'
+
+alias pyactivate='. env/bin/activate' 
