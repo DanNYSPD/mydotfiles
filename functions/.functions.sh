@@ -341,3 +341,7 @@ function ls_files_that_start_with_number_gt_than(){
         [[ $number -gt $OFFSET ]] && echo "$file"
     done
 }
+
+function pg_normalize_fk_constraints(){
+    sed 's/FK/fk_/' | sed -E '/ALTER/s/([0-9]{1,6})( FOR.*CES )(.* )/_\3\2\3/g' 
+}
