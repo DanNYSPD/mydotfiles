@@ -203,7 +203,15 @@ function selectTopFeactNumberBranch(){
         newBranchName="feat/${nextBranch}_${branch_description}"
         echo "$newBranchName"
         #by uploading the new branch automatically we ensure that this branch number will no be used by another app
-        echo "git checkout -b $newBranchName && git push origin"
+        gitcommand="git checkout -b $newBranchName"
+        echo "git checkout -b $newBranchName && git push origin $newBranchName"
+        read  "REPLY?Are you sure?" 
+        if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+            eval "${gitcommand}" #zsh
+        else 
+            echo "wasn't run $gitcommand"
+            return 0
+        fi
         return 0
     fi 
 	echo 'No given branch names with the format: <feat/{number}_{featch_description}> were found! in the current repo.\nPlease make sure this repo follows that convention or if you need to create the firts branch with this convention, so the firts branch name is: \n<feat/1_{branch_description}>'
