@@ -353,3 +353,9 @@ function ls_files_that_start_with_number_gt_than(){
 function pg_normalize_fk_constraints(){
     sed 's/FK/fk_/' | sed -E '/ALTER/s/([0-9]{1,6})( FOR.*CES )(.* )/_\3\2\3/g' 
 }
+
+function git-last-commit-message(){
+# get the las commit message from a non-merge commit.
+# ref:https://stackoverflow.com/questions/22247035/how-to-find-latest-non-merge-commit-message-in-git
+	git show $(git rev-list --no-merges -n 1 HEAD) -s --format=%s
+}
