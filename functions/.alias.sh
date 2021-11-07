@@ -77,3 +77,5 @@ alias lla='ls -la'
 alias pyinit='python3 -m venv env'
 
 alias pyactivate='. env/bin/activate' 
+
+alias clip='xclip -sel clip'
