@@ -258,6 +258,9 @@ function waitUntilDockerProcessIsRunning(){
 	until docker ps | grep -m 1 "$PROCESS"; do : ; sleep 1;  echo "still not found:$PROCESS" ; done
 
 }
+
+# Applies a commit with a commit message format: fix|feat\(branch_name\):commit_message
+#
 function git-commit(){
 	prefixCommitName=$(git branch| grep '*' | tr -d ' *')
 	echo "git commit  -m  ' (${prefixCommitName}): $@ '" 
@@ -303,6 +306,46 @@ function git-commit(){
     echo "git push origin $bname"
 }
 
+#context. The pipe line requires a format in the last commit message (see function git-commit in this file), when a branch is merge with another(a pull) is necesary that 
+# create emtoy commit with the formated message base on the last "merge commit"
+# merge message default format:Merge remote-tracking branch 'branch' into branch
+function git-empty-commit-for-merge(){
+    local type="fix"
+    local branch_name
+    local commit_format
+    local back_steps
+    branch_name=$(git branch --show-current)    
+    commit_format="$type($branch_name)"
+    back_steps=2 # TODO: allow receives this as optional param
+    function get_merge_commits(){
+        git log --pretty='[%h] %an: %s' -"$back_steps" | grep 'Merge.* into'
+    }
+    echo "prefix: $commit_format"
+    merge_message=$(get_merge_commits|sed 's/.*://'| tr -d "':" )
+    if [[  $(get_merge_commits | grep -v ^$ -c) -gt 0 ]]; then 
+        echo "merge commit found, steps back commit number:$back_steps"
+        merge_message=$(echo $merge_message| sed 's/.*://'| tr -d "'" )
+        #git commit --allow-empty -m  "$commit_format: $merge_message "
+        gitcommit_message="$commit_format: $merge_message "
+        echo "commit message: $gitcommit_message"
+        gitcommand="git commit --allow-empty -m '$gitcommit_message'"
+        echo "$gitcommand"
+
+        read  "REPLY?Are you sure to apply an empty commit with the given message?" 
+
+        if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+            eval "${gitcommand}" #zsh
+        else 
+            echo "wasn't run: <$gitcommand>"
+            return 0
+        fi
+        return 0
+    else 
+        echo "No merge commit found, back commit steps number:$back_steps"
+    fi
+    #echo  "$commit_format $merge_message "
+
+}
 
 #0 – major, 1 – minor, 2 – patch
 increment_version() {
