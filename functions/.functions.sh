@@ -402,3 +402,12 @@ function git-last-commit-message(){
 # ref:https://stackoverflow.com/questions/22247035/how-to-find-latest-non-merge-commit-message-in-git
 	git show $(git rev-list --no-merges -n 1 HEAD) -s --format=%s
 }
+# compare local branch with remote (default origin)
+# usage:
+# git-diff-with-remote 
+# git-diff-with-remote --name-only
+function git-diff-remote(){
+    branch_name=$(git branch --show-current)
+    remote='origin' #TODO: Receives as argument(useful when has multiple remote)
+    git diff "$@" "$branch_name" "$remote/$branch_name"
+}
