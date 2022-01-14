@@ -79,3 +79,12 @@ alias pyinit='python3 -m venv env'
 alias pyactivate='. env/bin/activate' 
 
 alias clip='xclip -sel clip'
+
+#exec shortcut
+alias dce="docker-compose exec"
+#go into the container bash-shell
+alias dcebash="docker-compose exec web /bin/bash"
+# run manage inside container
+alias dcem="docker-compose exec web python manage.py"
+
+alias dcem_shell="docker-compose exec web python manage.py shell"
