@@ -88,3 +88,5 @@ alias dcebash="docker-compose exec web /bin/bash"
 alias dcem="docker-compose exec web python manage.py"
 
 alias dcem_shell="docker-compose exec web python manage.py shell"
+#https://stackoverflow.com/questions/424071/how-do-i-list-all-of-the-files-in-a-commit
+alias glscommit="git diff-tree --no-commit-id --name-only -r"
