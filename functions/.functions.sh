@@ -411,3 +411,85 @@ function git-diff-remote(){
     remote='origin' #TODO: Receives as argument(useful when has multiple remote)
     git diff "$@" "$branch_name" "$remote/$branch_name"
 }
+
+function pass(){
+    openssl rand -base64 10
+}
+
+function django-start-app-old(){
+    #https://stackoverflow.com/questions/38093854/django-how-to-startapp-inside-an-apps-folder
+    # inits an app inside apps directory
+    local app_dir="apps/$1"
+    echo "creating app_dir:$app_dir"
+    mkdir -p "$app_dir"
+    python manage.py startapp "$1" "$app_dir"
+}
+function django-start-app(){
+    #https://stackoverflow.com/questions/38093854/django-how-to-startapp-inside-an-apps-folder
+    # inits an app iniside apps dir and create aditional folders and files according to a given convention
+    local STANDART_APPS_DIR="apps"
+    if [[ ! -d "$STANDART_APPS_DIR" ]];then 
+        echo "No apps dir found" && exit 1
+    fi
+
+    cd "$STANDART_APPS_DIR"    
+    if [[ -d "$1" ]]; then 
+        echo "app $1 already exists in apps module"
+    else
+        echo "starting app (initializin).. $1" 
+        python ../manage.py startapp "$1" 
+        rm "$1/tests.py"
+    fi
+    #create aditional files
+  
+    echo "Creating additional files:"
+    mkdir -p "$1/tests"
+    touch "$1/tests/__init__.py" # declare test as module
+    additional_files=("definitions.py" "factories.py" "serializers.py" "urls.py")
+    
+    for str in "${additional_files[@]}"; do
+        touch "$1/$str" # declare test as module
+    done
+
+    cd "-" #we return to previous path
+}
+
+
+function git-amend(){
+    branch_name=$(git branch --show-current)
+    PS3='Please select the type of commit: '
+    type=''
+	optselect=("feat" 
+    "fix" 
+    "Quit")
+	select opt in "${optselect[@]}"
+	do
+	    case $opt in
+	        "feat")
+	           type="feat"
+               break
+	            ;;
+	        "fix")
+	            type="fix"
+                break
+	            ;;       
+	        "Quit")
+	            break
+	            ;;
+	        *) echo "invalid option $REPLY";;
+	    esac
+	done
+    gitcommand="git commit --amend -m '$type($branch_name): $@'"
+    echo "$gitcommand" 
+    
+	#read -p "Are you sure to run $gitcommand? " -n 1 -r #bash way -p option has a different meaning in zsh
+    read  "REPLY?Are you sure?" 
+
+	#echo    # (optional) move to a new line
+	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        eval ${gitcommand} #zsh
+    else 
+	    echo "wasn't run $gitcommand"
+        return 1
+	fi
+}
