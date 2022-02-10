@@ -195,7 +195,8 @@ function selectTopFeactNumberBranch(){
     fi
     branch_description=$1
 	#nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*origin\/feat\///' -e 's/_.*//'  | sort -r | head -n1 |tr -d '[[:blank:]]')
-	nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*feat\///' -e 's/_.*//'  | sort -r | head -n1 |tr -d '[[:blank:]]')
+    #https://unix.stackexchange.com/questions/355266/how-can-i-sort-numbers-in-a-unix-shell
+	nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*feat\///' -e 's/_.*//'  | sort -V | tail -n1 |tr -d '[[:blank:]]')
     
     #echo "$nextBranch" #for debug
     if [[ "$nextBranch" =~ [0-9]{1,4} ]]; then 
