@@ -75,3 +75,28 @@ function getGotoURLDjango(){
     done
 }
 
+
+#gotodjangorest "/internal/v1/tasks/     internal.views.internal_tasks.TasksInternalViewSet      internal_tasks-list" "../"
+#gotodjangorest "/internal/v1/tracking/<pk>/url/ internal.views.tracking.TrackingInternalViewSet internal_tracking-url" "../"
+
+function resolve_python_module_namespace(){
+    #
+    #    apps.users.model =>    apps/users/models.py
+    #
+    local dir_path;
+    dir_path=$(echo "$1" |tr '.' '/')
+    #echo "$dir_path.py"
+    if [[ -f "$dir_path.py" ]]; then 
+        dir_path="$dir_path.py"
+        echo "exists: $dir_path"
+    else 
+        #TODO: resolve from parent, suppose we have "apps.users.model.MyModel" where MyModel is class defined in model file
+        echo "resolving sub:$dir_path"
+        #dir=${dir_path##*/}
+        dir_rev=$(echo  $dir_path|rev)
+        dir=${dir_rev##*/}
+        
+        echo "$dir"
+    fi
+    
+}
