@@ -93,3 +93,29 @@ alias glscommit="git diff-tree --no-commit-id --name-only -r"
 
 
 alias py="python "
+
+#for env with python 2, python3 is the bin filename
+alias py3="python3 "
+
+alias phps="php -S localhost:8080"
+
+#set flask entry point
+
+alias fapp="export FLASK_APP="
+alias fenv="export FLASK_ENV="
+alias fport="export FLASK_RUN_PORT="
+
+alias f="flask"
+alias fr="flask run "
+
+#shorthand to install with save option
+alias npmi="npm install --save"
+
+alias npmid="npm install --save-dev"
+
+
+alias sc='systemctl'
+
+alias scr='systemctl restart'
+alias sce='systemctl stop'
+alias scs='systemctl start'

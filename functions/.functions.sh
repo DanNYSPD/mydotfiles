@@ -428,9 +428,10 @@ function django-start-app-old(){
 function django-start-app(){
     #https://stackoverflow.com/questions/38093854/django-how-to-startapp-inside-an-apps-folder
     # inits an app iniside apps dir and create aditional folders and files according to a given convention
+    # Ensure to have pyactivate environment
     local STANDART_APPS_DIR="apps"
     if [[ ! -d "$STANDART_APPS_DIR" ]];then 
-        echo "No apps dir found" && exit 1
+        echo "No apps dir found" && return 1
     fi
 
     cd "$STANDART_APPS_DIR"    
@@ -438,7 +439,15 @@ function django-start-app(){
         echo "app $1 already exists in apps module"
     else
         echo "starting app (initializin).. $1" 
-        python ../manage.py startapp "$1" 
+        MANAGE="../manage.py"
+        if [[ ! -f  "$MANAGE" ]]; then
+            echo "Not found: $MANAGE"
+            return 1
+        fi
+        python "$MANAGE" startapp "$1" 
+        if [[ "$?" -ne 0 ]]; then 
+              echo "Error on command" && return 1
+        fi  
         rm "$1/tests.py"
     fi
     #create aditional files
@@ -446,10 +455,43 @@ function django-start-app(){
     echo "Creating additional files:"
     mkdir -p "$1/tests"
     touch "$1/tests/__init__.py" # declare test as module
-    additional_files=("definitions.py" "factories.py" "serializers.py" "urls.py" "services.py")
+    additional_files=("definitions.py" "factories.py" "serializers.py" "urls.py" "services.py" "__init__.py")
     
     for str in "${additional_files[@]}"; do
         touch "$1/$str" # declare test as module
+    done
+
+    cd "-" #we return to previous path
+}
+
+function django-add-command(){
+    #https://stackoverflow.com/questions/38093854/django-how-to-startapp-inside-an-apps-folder
+    #https://docs.djangoproject.com/en/4.0/howto/custom-management-commands/
+    # inits an command module inisde django app given in the first param
+    local STANDART_APPS_DIR="apps"
+    if [[ ! -d "$STANDART_APPS_DIR" ]];then 
+        echo "No apps dir found" && return 
+    fi
+
+    cd "$STANDART_APPS_DIR"    
+    if [[ -z "$1" ]]; then 
+        echo "app param 1 $1 emtpy"    
+        return 
+    fi
+    if [[ ! -d "$1" ]]; then 
+        echo "app $1 not exists in apps module of the system"    
+        return 
+    fi
+    #create aditional files
+  
+    echo "Creating additional command files:"
+    mkdir -p "$1/management/commands"
+    touch "$1/management/__init__.py" # declare test as module
+    touch "$1/management/commands/__init__.py" # declare test as module
+    additional_files=("command.py")
+    
+    for str in "${additional_files[@]}"; do
+        touch "$1/management/commands/$str" # declare test as module
     done
 
     cd "-" #we return to previous path
