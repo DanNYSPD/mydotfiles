@@ -36,6 +36,7 @@ alias gsjava=git status --porcelain | grep -E '*.java'
 alias gsmd=git status --porcelain | grep -E '*.md'  
 
 alias mls='cat Makefile | grep -Eo "(.*):$" | tr -d ":"'
+alias makelist='mls' #long name
 alias psg='ps aux | grep'
 
 alias hhg='history | grep'
@@ -47,6 +48,25 @@ alias k9='kill -9' #quick kill process
 alias gppush='git push origin $(git branch| grep "*" | tr -d "* ")' #push current branch
 
 alias m='make'
+
+function mdef(){
+    #show Make definition (one line after the command name is defined)
+    # if a nth param is received then this function will append these nth params to the commmand definition . 
+    # Is assumed that these parameters are params to the command definition so you don't have to adapt the command definition + its params
+    # Given a command: make makemigrations --dry-run
+    # the result will be: {content of makemigrations command} + --dry-run
+    command_name=$1
+    if [[ $(cat Makefile | grep "$command_name:" -c) -gt 0  ]]; then 
+        echo "$command_name found"
+        shift;
+        echo $(cat Makefile | grep "$command_name:" -a1 |sed -n 3p | awk '{print $0}') "$@"
+    fi
+    #cat Makefile | grep "$1:" -a1
+}
+function makedefinition(){
+    #full name for the function
+    mdef "$@"
+}
 alias h='history'
 
 alias ta="tmux attach"
@@ -119,3 +139,8 @@ alias sc='systemctl'
 alias scr='systemctl restart'
 alias sce='systemctl stop'
 alias scs='systemctl start'
+
+alias c='code .'
+
+alias django-migrate='docker-compose exec web python manage.py migrate'
+alias django-makemigrations='docker-compose exec web python manage.py makemigrations'
