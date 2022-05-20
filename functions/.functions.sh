@@ -181,12 +181,48 @@ function gitls(){
 #https://www.commandlinefu.com/commands/view/2345/show-git-branches-by-date-useful-for-showing-active-branches
     for name in `git branch -a | perl -pe s/^..//`; do echo -e `git show --pretty=format:"%Cgreen%ci %Cblue%cr%Creset" $k -- | head -n 1`\\t$name; done | sort -r
 }
+
+
+function  semantic_options(){
+    type="" # feat,fix,hotfix
+    PS3='Please select the type of commit: '
+    optselect=("feat" 
+    "fix" 
+    "hotfix"
+    "Quit")
+    select opt in "${optselect[@]}"
+    do
+        case $opt in
+            "feat")
+               type="feat"
+               break
+                ;;
+            "fix")
+                type="fix"
+                break
+                ;; 
+            "hotfix")
+                type="hotfix"
+                break
+                ;;             
+            "Quit")
+                break
+                ;;
+            *) echo "invalid option $REPLY";;
+        esac
+    done
+
+    echo  $type
+}
+
+
 function selectTopFeactNumberBranch(){
 #based on references:
 
-#logic is to select the feat branches that include a number "feat/01_XXX" "feat/{number}_", then remove the text in order to get the highest number
-#given the branch "feat/{number}_" this function will return the next number
-
+#the  logic is to select the feat branches that include a number "feat/01_XXX" "feat/{number}_", then remove the text in order to get the highest number
+#given the branch "feat/{number}_" this function will return the next number,  this mecanism  assumes  that most  recent  branches  have  been  pushed  to  remote(but  if  another  colaborator  hasn't  pushed  its last branch then  a  number  colision  can  happen).
+    
+    type=$(semantic_options)
 
     git status > /dev/null
     if [[ "$?" -ne 0 ]]; then 
@@ -196,12 +232,14 @@ function selectTopFeactNumberBranch(){
     branch_description=$1
 	#nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*origin\/feat\///' -e 's/_.*//'  | sort -r | head -n1 |tr -d '[[:blank:]]')
     #https://unix.stackexchange.com/questions/355266/how-can-i-sort-numbers-in-a-unix-shell
-	nextBranch=$(gitls | grep -E 'feat/[0-9]{1,4}' | sed -e 's/.*feat\///' -e 's/_.*//'  | sort -V | tail -n1 |tr -d '[[:blank:]]')
-    
+    #nextBranch=$(gitls | grep -E "$type/[0-9]{1,4}" | sed -e 's/.*hotfix\///' -e 's/_.*//'  | sort -V | tail -n1 |tr -d '[[:blank:]]')
+	nextBranch=$(gitls | grep -E "$type/[0-9]{1,4}" |  sed -e "s/.*$type\///" -e 's/_.*//'  | sort -V | tail -n1 |tr -d '[[:blank:]]')
+    echo $nextBranch
+    #return  0
     #echo "$nextBranch" #for debug
     if [[ "$nextBranch" =~ [0-9]{1,4} ]]; then 
         nextBranch=$((nextBranch+1))
-        newBranchName="feat/${nextBranch}_${branch_description}"
+        newBranchName="$type/${nextBranch}_${branch_description}"
         echo "$newBranchName"
         #by uploading the new branch automatically we ensure that this branch number will no be used by another app
         gitcommand="git checkout -b $newBranchName"
@@ -265,10 +303,13 @@ function waitUntilDockerProcessIsRunning(){
 function git-commit(){
 	prefixCommitName=$(git branch| grep '*' | tr -d ' *')
 	echo "git commit  -m  ' (${prefixCommitName}): $@ '" 
-	type="" # feat/fix
+	type="" # feat,fix,hotfix
 	PS3='Please select the type of commit: '
 	optselect=("feat" 
     "fix" 
+    "hotfix"
+    "refactor"
+    "perf"
     "Quit")
 	select opt in "${optselect[@]}"
 	do
@@ -280,7 +321,19 @@ function git-commit(){
 	        "fix")
 	            type="fix"
                 break
-	            ;;       
+	            ;; 
+            "hotfix")
+                type="hotfix"
+                break
+                ;;
+            "refactor")
+                type="refactor"
+                break
+                ;;
+            "perf")
+                type="perf"
+                break
+                ;;
 	        "Quit")
 	            break
 	            ;;
@@ -504,6 +557,7 @@ function git-amend(){
     type=''
 	optselect=("feat" 
     "fix" 
+    "hotfix" 
     "Quit")
 	select opt in "${optselect[@]}"
 	do
@@ -515,7 +569,11 @@ function git-amend(){
 	        "fix")
 	            type="fix"
                 break
-	            ;;       
+	            ;;
+            "hotfix")
+                type="hotfix"
+                break
+                ;;              
 	        "Quit")
 	            break
 	            ;;
