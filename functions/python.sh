@@ -100,3 +100,24 @@ function resolve_python_module_namespace(){
     fi
     
 }
+
+#TODO:  create  function  to  download  a  python  version ,  extract,  go  inside  the  folder  and  the  invoke  pycompile
+
+function  pycompile(){
+    #  inspired by https://stackoverflow.com/questions/1534210/use-different-python-version-with-virtualenv/39713544#39713544
+    #  Compile  the  python  of  the  current  directory  to be  installed  on  /usr/local/bin/python{dotted_version}
+    #  1.  download  the  desired  version  from:https://www.python.org/downloads/source/  ->wget  https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz
+    #  2.  untar                                                                            ->tar  -xvf  Python-3.7.9.tgz
+    #  3.  go  inside                                                                       ->cd Python-3.7.9
+    #  4.  run  this  funcion                                                               ->  pycompile
+    
+
+    #sudo  dnf  install  python3-devel
+    #sudo  dnf  install libffi-devel -y  :fix  _ctypes  error  on  compilation
+    time ./configure                 ## 17 sec
+    time make ;  echo "code $?"                    
+    #generate  the  ln  for  the  compile  python version  .eg./usr/local/bin/python3.7
+    time sudo make install  ;  echo "code $?"         ## 18 sec
+    #erase  python compiled  files(pyc)
+    time  sudo make clean     ;  echo "code $?"             ## 0.3 sec
+}

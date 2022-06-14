@@ -95,7 +95,12 @@ alias lla='ls -la'
 
 # init python
 alias pyinit='python3 -m venv env'
-
+#Non-system  python  version(compile  versions)
+alias pyinit3.7='python3.7 -m venv  env'
+alias pyinit3.8='python3.8 -m venv  env'
+alias pyinit3.9='python3.9 -m venv  env'
+alias pyinit3.10='python3.10 -m venv  env'
+alias pypip='python  -m  pip'  #pip  from  the  current  python  on  the  PATH ,  useful  for  virtual environments.
 alias pyactivate='. env/bin/activate' 
 
 alias clip='xclip -sel clip'
