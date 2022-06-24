@@ -49,7 +49,9 @@ alias gppush='git push origin $(git branch| grep "*" | tr -d "* ")' #push curren
 
 alias m='make'
 
-function mdef(){
+alias aliasg="alias | grep "  #shortcut  to  find  aliases
+
+function ml(){
     #show Make definition (one line after the command name is defined)
     # if a nth param is received then this function will append these nth params to the commmand definition . 
     # Is assumed that these parameters are params to the command definition so you don't have to adapt the command definition + its params
@@ -57,7 +59,7 @@ function mdef(){
     # the result will be: {content of makemigrations command} + --dry-run
     command_name=$1
     if [[ $(cat Makefile | grep "$command_name:" -c) -gt 0  ]]; then 
-        echo "$command_name found"
+        echo "'$command_name' found  in  Makefile,  definition:"
         shift;
         echo $(cat Makefile | grep "$command_name:" -a1 |sed -n 3p | awk '{print $0}') "$@"
     fi
@@ -65,7 +67,7 @@ function mdef(){
 }
 function makedefinition(){
     #full name for the function
-    mdef "$@"
+    ml "$@"
 }
 alias h='history'
 
