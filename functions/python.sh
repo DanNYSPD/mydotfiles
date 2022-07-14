@@ -121,3 +121,21 @@ function  pycompile(){
     #erase  python compiled  files(pyc)
     time  sudo make clean     ;  echo "code $?"             ## 0.3 sec
 }
+
+
+function pyinstall_from_url(){
+    # from a python given url with the python sourced in format tar, this funcion 1) download, 2) untar it and 3) compile
+    local URL="$1"
+    # download
+    wget $URL
+   
+   
+    DOWNLOADED_PYTHON_SOURCE=$(echo ${URL##*/})
+    DIR_UNCOMPRESSED=$(echo ${DOWNLOADED_PYTHON_SOURCE%.*})
+    echo $DIR_UNCOMPRESSED
+    # untar
+    tar  -xvf $DOWNLOADED_PYTHON_SOURCE
+    cd $DIR_UNCOMPRESSED
+    #finally compile
+    pycompile
+}
