@@ -139,3 +139,11 @@ function pyinstall_from_url(){
     #finally compile
     pycompile
 }
+
+function pytopypath(){
+    # replaces the / by . and .py from a path
+    local normal_path="$1"
+    local pypath=$(echo "$normal_path" | tr '/' '.' | sed 's/.py//')
+    echo $pypath
+    echo "from $pypath"
+}

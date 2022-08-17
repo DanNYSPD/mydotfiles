@@ -509,7 +509,7 @@ function django-start-app(){
     echo "Creating additional files:"
     mkdir -p "$1/tests"
     touch "$1/tests/__init__.py" # declare test as module
-    additional_files=("definitions.py" "factories.py" "serializers.py" "urls.py" "services.py" "__init__.py")
+    additional_files=("definitions.py" "factories.py" "serializers.py" "urls.py" "services.py" "__init__.py" "celery_tasks.py")
     
     for str in "${additional_files[@]}"; do
         touch "$1/$str" # declare test as module
