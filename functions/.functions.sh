@@ -257,6 +257,10 @@ function selectTopFeactNumberBranch(){
 	echo 'No given branch names with the format: <feat/{number}_{featch_description}> were found! in the current repo.\nPlease make sure this repo follows that convention or if you need to create the firts branch with this convention, so the firts branch name is: \n<feat/1_{branch_description}>'
 }
 
+function git-select-top-feat-number-branch(){
+    selectTopFeactNumberBranch "$@"
+}
+
 # Description: this function will list files in a tree format excluding by default git ignored files if a .gitignore is found, otherwise it will ignore common folders
 # Globals: NONE
 # Args:  
@@ -596,3 +600,13 @@ function git-amend(){
 	fi
 }
 
+function ttstart (){
+    #https://unix.stackexchange.com/questions/19014/how-to-strip-multiple-spaces-to-one-using-sed
+    project_name=$(tt ls| tail -n+2| sed 's/  */ /g' | tr ' ' '\n'|fzf)
+    
+    if [[ -n $project_name ]]; then 
+        tmuxinator start "$project_name" && echo "$project_name started!!"
+    else
+        echo "No project selected!"
+    fi
+}
