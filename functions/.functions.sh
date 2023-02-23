@@ -610,3 +610,40 @@ function ttstart (){
         echo "No project selected!"
     fi
 }
+
+function dco(){
+
+    instance=$(docker ps | awk '{print $2 ":" $1}' | tail -n+2|fzf)
+
+    if [[ -n "$instance" ]]; then 
+        echo $instance
+        container_id=$(echo "$instance"| awk -F: '{print $2}')
+        docker exec -it "$container_id" /bin/bash || docker exec -it "$container_id" /bin/bash
+    else
+        echo "You need to select a container"
+    fi
+}
+
+function ttc(){
+    session_name=$(tmux list-sessions | awk -F: '{print $1}'|fzf)
+    if [[ -n "$session_name" ]]; then 
+        tmux attach -t "$session_name"
+    else
+        echo "You need to select a tmux session"
+    fi
+}
+function mlss(){
+    if [[  -f "Makefile" ]]; then  
+        command=$(cat Makefile | grep -Eo "(.*):$" | tr -d ":" |fzf)
+
+        if [[ -n "$command" ]]; then 
+            make "$command"
+        else 
+            echo "No command in makefile selected"
+        fi
+
+    else 
+        echo 'No make file exist'
+   
+    fi
+}
