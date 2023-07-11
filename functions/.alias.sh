@@ -152,3 +152,8 @@ alias c='code .'
 alias django-migrate='docker-compose exec web python manage.py migrate'
 alias django-makemigrations='docker-compose exec web python manage.py makemigrations'
 alias django-squashmigrations='docker-compose exec web python manage.py squashmigrations'
+
+alias rpm-list="rpm -qa --qf '(%{INSTALLTIME:date}): %{NAME}-%{VERSION}\n'"
+
+
+alias git-clone-remote='git checkout --track origin/'

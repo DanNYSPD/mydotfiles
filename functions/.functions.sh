@@ -504,10 +504,12 @@ function django-start-app(){
         fi
         python "$MANAGE" startapp "$1" 
         if [[ "$?" -ne 0 ]]; then 
-              echo "Error on command" && return 1
+              echo "Error on command, returning to original dir. Please check you are 1) in the environment files." && cd - && return 1
         fi  
         rm "$1/tests.py"
     fi
+    #TODO: modify apps.py to set the name with the "apps.XXX" and add the label
+
     #create aditional files
   
     echo "Creating additional files:"
@@ -646,4 +648,13 @@ function mlss(){
         echo 'No make file exist'
    
     fi
+}
+
+function load_enviroments_variables_from_file(){
+    #loads .env files with export format.
+    source <(cat local/.env | sed 's/=\(.*\)/="\1"/'| grep '=' | grep -v ^# | awk '{print "export "$0}')
+}
+
+function unset_environment_variables_from_file(){
+    source <(cat local/.env | grep '='| sed 's/=.*//g'| grep -v '^# '| awk '{print "unset "$0}')
 }
