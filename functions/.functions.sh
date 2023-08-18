@@ -619,7 +619,8 @@ function dco(){
 
     if [[ -n "$instance" ]]; then 
         echo $instance
-        container_id=$(echo "$instance"| awk -F: '{print $2}')
+        #with NF we always get the last column of the f separator, in many cases a tag is used making 3th columns
+        container_id=$(echo "$instance"| awk -F: '{print $NF}')
         docker exec -it "$container_id" /bin/bash || docker exec -it "$container_id" /bin/bash
     else
         echo "You need to select a container"
@@ -657,4 +658,19 @@ function load_enviroments_variables_from_file(){
 
 function unset_environment_variables_from_file(){
     source <(cat local/.env | grep '='| sed 's/=.*//g'| grep -v '^# '| awk '{print "unset "$0}')
+}
+
+function git_ensure_staged_files(){
+    files=$(git diff --name-only --cached | grep -v ^$)
+    match_words=(breakpoint TODO)
+
+    for file in "${files[@]}"; do
+        for word in "${match_words[@]}"; do
+            grep -ni "$word" "$file";
+            # if grep -n "$word" "$file"; then
+            #     echo "$file"
+            #     break
+            # fi
+        done
+    done
 }
