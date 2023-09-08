@@ -30,3 +30,10 @@ function dcstop(){
         echo "You need to select a container"
     fi
 }
+
+function dcnetad_add(){
+    local container=$(docker container ls --format '{{.Names}}' | fzf  --header "select a container")
+    local multi_network=$( docker network ls | awk 'NR!=1{print $2}' | fzf)
+
+    docker network connect "$multi_network" "$container"
+}
