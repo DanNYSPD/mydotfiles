@@ -157,3 +157,5 @@ alias rpm-list="rpm -qa --qf '(%{INSTALLTIME:date}): %{NAME}-%{VERSION}\n'"
 
 
 alias git-clone-remote='git checkout --track origin/'
+
+alias dcl="docker container ls"

@@ -1,4 +1,6 @@
 #!/bin/bash
+#CURRENT_DIR="$(dirname $0)"
+#source "$($CURRENT_DIR/.docker.sh)"
 
 mkcdir ()
 {
@@ -613,19 +615,7 @@ function ttstart (){
     fi
 }
 
-function dco(){
 
-    instance=$(docker ps | awk '{print $2 ":" $1}' | tail -n+2|fzf)
-
-    if [[ -n "$instance" ]]; then 
-        echo $instance
-        #with NF we always get the last column of the f separator, in many cases a tag is used making 3th columns
-        container_id=$(echo "$instance"| awk -F: '{print $NF}')
-        docker exec -it "$container_id" /bin/bash || docker exec -it "$container_id" /bin/bash
-    else
-        echo "You need to select a container"
-    fi
-}
 
 function ttc(){
     session_name=$(tmux list-sessions | awk -F: '{print $1}'|fzf)
