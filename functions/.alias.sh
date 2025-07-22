@@ -159,3 +159,10 @@ alias rpm-list="rpm -qa --qf '(%{INSTALLTIME:date}): %{NAME}-%{VERSION}\n'"
 alias git-clone-remote='git checkout --track origin/'
 
 alias dcl="docker container ls"
+
+# alias for django local running
+
+alias pm='python manage.py'
+alias pmrun='python manage.py runserver'
+alias pmtest='python manage.py test'
+alias pmsurls='python manage.py show_urls'
