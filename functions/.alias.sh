@@ -30,10 +30,10 @@ alias dpsname-stop='dpsname | while read cname ;do echo "$cname" ; docker stop "
 ##quick alias
 alias django-show-urls='make show_urls| grep -Ev "django.*|rest_framework" | getGotoURLDjango'
 
-alias gspy=git status --porcelain | grep -E '*.py'  
-alias gsphp=git status --porcelain | grep -E '*.php'  
-alias gsjava=git status --porcelain | grep -E '*.java'  
-alias gsmd=git status --porcelain | grep -E '*.md'  
+alias gspy="git status --porcelain | grep -E '*.py'"  
+alias gsphp="git status --porcelain | grep -E '*.php'"  
+alias gsjava="git status --porcelain | grep -E '*.java'"  
+alias gsmd="git status --porcelain | grep -E '*.md'  "
 
 alias mls='cat Makefile | grep -Eo "(.*):$" | tr -d ":"'
 alias makelist='mls' #long name
