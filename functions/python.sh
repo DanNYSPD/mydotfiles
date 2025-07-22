@@ -103,6 +103,20 @@ function resolve_python_module_namespace(){
 
 #TODO:  create  function  to  download  a  python  version ,  extract,  go  inside  the  folder  and  the  invoke  pycompile
 
+function pydownload(){
+    tarfile_name=$(basename "$1")
+    tar_extracted_dir=$(echo $tarfile_name| sed 's/.tgz//')
+    echo $tarfile_name
+    echo $tar_extracted_dir
+
+    wget "$1" && tar  -xvf "$tarfile_name"
+
+    cd "$tar_extracted_dir" && echo "you are now on: $(pwd)"
+    
+    echo "Download and extrated source code, now you can run pycompile function."
+    
+
+}
 function  pycompile(){
     #  inspired by https://stackoverflow.com/questions/1534210/use-different-python-version-with-virtualenv/39713544#39713544
     #  Compile  the  python  of  the  current  directory  to be  installed  on  /usr/local/bin/python{dotted_version}
@@ -110,6 +124,7 @@ function  pycompile(){
     #  2.  untar                                                                            ->tar  -xvf  Python-3.7.9.tgz
     #  3.  go  inside                                                                       ->cd Python-3.7.9
     #  4.  run  this  funcion                                                               ->  pycompile
+    # Note: tested from 3.7 to 3.11
     
 
     #sudo  dnf  install  python3-devel
